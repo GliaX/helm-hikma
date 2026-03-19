@@ -1,0 +1,88 @@
+# Hikma Health Server Helm Chart Values
+
+# Image configuration
+image:
+  registry: ghcr.io
+  repository: gliax/hikma-health-server
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# ImagePullSecrets for private registry
+imagePullSecrets:
+  - name: ghcr-credentials
+
+# Deployment configuration
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 3000
+
+# Gateway API HTTPRoute configuration
+gateway:
+  enabled: true
+  gatewayClassName: gateway-public
+  host: hikma.example.com  # Replace with your domain
+  path: /
+
+# Resource limits
+resources:
+  limits:
+    cpu: 2000m
+    memory: 6Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+# Environment variables
+env:
+  NODE_ENV: production
+  NODE_OPTIONS: "--max-old-space-size=5120"
+  NODE_VERSION: "24.14.0"
+
+# Database configuration
+# DATABASE_URL should be provided via secret
+database:
+  # Set to true to create secret from values (NOT recommended for production)
+  createSecret: false
+  # Secret name where DATABASE_URL is stored
+  secretName: hikma-db-credentials
+
+# Health checks
+health:
+  liveness:
+    enabled: true
+    path: /health
+    port: 3000
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readiness:
+    enabled: true
+    path: /health
+    port: 3000
+    initialDelaySeconds: 30
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+
+# Pod configuration
+pod:
+  annotations: {}
+  labels: {}
+
+# Deployment strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+# Node selector, tolerations, affinity
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Namespace (can also be set via --namespace flag)
+namespace: hikma

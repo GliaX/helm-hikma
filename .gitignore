@@ -1,0 +1,22 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+
+# Helm temporary files
+charts/
+*.chart
+*.tgz
+
+# Local testing
+local-values.yaml
+test-values.yaml
