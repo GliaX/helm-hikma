@@ -21,11 +21,15 @@ spec:
     {{- end }}
   template:
     metadata:
+      {{- with .Values.pod.annotations }}
       annotations:
-        {{- toYaml .Values.pod.annotations | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "hikma.selectorLabels" . | nindent 8 }}
-        {{- toYaml .Values.pod.labels | nindent 8 }}
+        {{- with .Values.pod.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
