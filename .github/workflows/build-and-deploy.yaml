@@ -52,6 +52,9 @@ jobs:
           # Build stage
           FROM node:24.14.0-alpine AS builder
           
+          # Install git for lefthook
+          RUN apk add --no-cache git
+          
           WORKDIR /app
           
           # Install pnpm
@@ -60,8 +63,8 @@ jobs:
           # Copy package files
           COPY package.json pnpm-lock.yaml ./
           
-          # Install dependencies
-          RUN pnpm install --frozen-lockfile
+          # Install dependencies (skip prepare script to avoid lefthook)
+          RUN pnpm install --frozen-lockfile --ignore-scripts
           
           # Copy source code
           COPY . .
@@ -80,8 +83,8 @@ jobs:
           # Copy package files
           COPY package.json pnpm-lock.yaml ./
           
-          # Install production dependencies only
-          RUN pnpm install --prod --frozen-lockfile
+          # Install production dependencies only (skip prepare script)
+          RUN pnpm install --prod --frozen-lockfile --ignore-scripts
           
           # Copy built application from builder
           COPY --from=builder /app/.output .output
