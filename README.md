@@ -17,9 +17,10 @@ Set up the following secrets in your `gliax/helm-hikma` repository:
 
 | Secret Name | Description | Example |
 |-------------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:password@host:5432/dbname?sslmode=require` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:***@host:5432/dbname?sslmode=require` |
 | `KUBE_CONFIG` | Base64-encoded Kubernetes kubeconfig | See below |
 | `DIGITALOCEAN_TOKEN` | DO API token with cluster access | See below |
+| `GHCR_PAT` | GitHub PAT for pulling images from GHCR | See below |
 | `HIKMA_REPO_TOKEN` | GitHub token with access to hikma-health-server | Personal Access Token (classic) with `repo` scope |
 | `GATEWAY_HOST` (optional) | Domain for Gateway API | `hikma.yourdomain.com` |
 

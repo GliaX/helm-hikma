@@ -7,9 +7,8 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-# ImagePullSecrets for private registry
-imagePullSecrets:
-  - name: ghcr-credentials
+# ImagePullSecrets for private registry (not needed for public packages)
+imagePullSecrets: []
 
 # Deployment configuration
 replicaCount: 1
