@@ -36,20 +36,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Delete existing package (if exists)
-        run: |
-          gh package delete hikma-health-server --type container --confirm || echo "Package does not exist or already deleted"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create new container registry package (public)
-        run: |
-          gh api "/user/packages/container/hikma-health-server" \
-            --method PUT \
-            -f visibility=public || echo "Package creation may have already occurred"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract metadata for Docker
         id: meta
         uses: docker/metadata-action@v5
