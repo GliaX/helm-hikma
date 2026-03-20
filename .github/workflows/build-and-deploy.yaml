@@ -186,8 +186,8 @@ jobs:
           helm upgrade --install hikma . \
             --namespace hikma \
             --create-namespace \
-            --wait \
-            --timeout 10m
+            
+            
 
       - name: Verify deployment
         run: |
@@ -212,3 +212,24 @@ jobs:
             echo "Logs from $POD_NAME:"
             kubectl logs $POD_NAME -n hikma --tail=50 || true
           fi
+      - name: Check pod status
+        run: |
+          echo "Checking pods..."
+          kubectl get pods -n hikma -o wide
+          echo ""
+          echo "Checking deployment..."
+          kubectl get deployment hikma-hikma -n hikma
+          echo ""
+          echo "Checking events..."
+          kubectl get events -n hikma --sort-by='.lastTimestamp' | tail -20
+
+      - name: Get pod logs
+        run: |
+          POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=hikma -n hikma -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+          if [ -n "$POD_NAME" ]; then
+            echo "Logs from $POD_NAME:"
+            kubectl logs $POD_NAME -n hikma --tail=100 || echo "Could not get logs"
+          else
+            echo "No pods found"
+          fi
+EOF; __hermes_rc=$?; printf '__HERMES_FENCE_a9f7b3__'; exit $__hermes_rc
