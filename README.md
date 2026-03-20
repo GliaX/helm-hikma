@@ -17,8 +17,9 @@ Set up the following secrets in your `gliax/helm-hikma` repository:
 
 | Secret Name | Description | Example |
 |-------------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:password@db-host:5432/hikma?sslmode=require` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:password@host:5432/dbname?sslmode=require` |
 | `KUBE_CONFIG` | Base64-encoded Kubernetes kubeconfig | See below |
+| `DIGITALOCEAN_TOKEN` | DO API token with cluster access | See below |
 | `HIKMA_REPO_TOKEN` | GitHub token with access to hikma-health-server | Personal Access Token (classic) with `repo` scope |
 | `GATEWAY_HOST` (optional) | Domain for Gateway API | `hikma.yourdomain.com` |
 
@@ -33,6 +34,18 @@ cat ~/.kube/config | base64 -w 0
 ```
 
 Copy the output and add it as the `KUBE_CONFIG` secret.
+
+#### Getting DIGITALOCEAN_TOKEN:
+
+1. Go to **DigitalOcean Control Panel** → **API** → **Generate New Token**
+2. Name it something like "GitHub Actions - helm-hikma"
+3. **Select these scopes:**
+   - ✅ **access cluster** - View and download Kubernetes cluster credentials (REQUIRED)
+   - ✅ **read** - View Kubernetes clusters (optional, for troubleshooting)
+4. Click **Generate Token**
+5. Copy the token and add it as `DIGITALOCEAN_TOKEN` secret
+
+**Important:** The `access cluster` scope is required for `doctl` to authenticate with your Kubernetes cluster.
 
 #### Getting HIKMA_REPO_TOKEN:
 
@@ -74,7 +87,7 @@ kubectl create namespace hikma
 
 # Create database secret
 kubectl create secret generic hikma-db-credentials \
-  --from-literal=DATABASE_URL="postgresql://user:pass@host:5432/db?sslmode=require" \
+  --from-literal=DATABASE_URL="postgresql://user:password@host:5432/db?sslmode=require" \
   -n hikma
 
 # Create image pull secret for GHCR
