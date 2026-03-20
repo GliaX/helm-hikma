@@ -168,10 +168,11 @@ jobs:
           cd helm-hikma
           # Get the image tag from the build job
           IMAGE_TAG="${{ github.sha }}"
-          sed -i "s/tag: .*/tag: $IMAGE_TAG/" values.yaml
+          # Use | as delimiter to avoid conflicts with / in paths
+          sed -i "s|tag: .*|tag: $IMAGE_TAG|" values.yaml
           # Update gateway host if provided
           if [ -n "${{ secrets.GATEWAY_HOST }}" ]; then
-            sed -i "s/host: .*/host: ${{ secrets.GATEWAY_HOST }}/" values.yaml
+            sed -i "s|host: .*|host: ${{ secrets.GATEWAY_HOST }}|" values.yaml
           fi
 
       - name: Deploy to Kubernetes
