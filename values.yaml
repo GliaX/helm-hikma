@@ -27,9 +27,9 @@ service:
 
 # Gateway API HTTPRoute configuration
 gateway:
-  enabled: true
+  enabled: false  # Set to true and provide a valid host to enable
   gatewayClassName: gateway-public
-  host: hikma.example.com  # Replace with your domain
+  host: ""  # Replace with your domain (e.g., hikma.yourdomain.com)
   path: /
 
 # Resource limits
