@@ -154,23 +154,18 @@ jobs:
             -n hikma \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Check if DATABASE_URL secret exists
-        id: check-secret
-        run: |
-          if kubectl get secret hikma-db-credentials -n hikma --ignore-not-found=true; then
-            echo "secret_exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "secret_exists=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Create DATABASE_URL secret
-        if: steps.check-secret.outputs.secret_exists == 'false'
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          kubectl create secret generic hikma-db-credentials \
-            --from-literal=DATABASE_URL="$DATABASE_URL" \
-            -n hikma
+          if [ -n "$DATABASE_URL" ]; then
+            kubectl create secret generic hikma-db-credentials \
+              --from-literal=DATABASE_URL="$DATABASE_URL" \
+              -n hikma \
+              --dry-run=client -o yaml | kubectl apply -f -
+          else
+            echo "WARNING: DATABASE_URL secret not set in GitHub secrets"
+          fi
 
       - name: Update values with image tag
         run: |
