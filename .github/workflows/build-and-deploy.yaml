@@ -131,6 +131,11 @@ jobs:
         with:
           version: "v3.13.0"
 
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+
       - name: Configure kubectl
         run: |
           mkdir -p ~/.kube
