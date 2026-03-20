@@ -163,6 +163,7 @@ jobs:
               --from-literal=DATABASE_URL="$DATABASE_URL" \
               -n hikma \
               --dry-run=client -o yaml | kubectl apply -f -
+            echo "DATABASE_URL secret created"
           else
             echo "WARNING: DATABASE_URL secret not set in GitHub secrets"
           fi
@@ -170,11 +171,8 @@ jobs:
       - name: Update values with image tag
         run: |
           cd helm-hikma
-          # Get the image tag from the build job
           IMAGE_TAG="${{ github.sha }}"
-          # Use | as delimiter to avoid conflicts with / in paths
           sed -i "s|tag: .*|tag: $IMAGE_TAG|" values.yaml
-          # Update gateway host if provided and valid
           GATEWAY_HOST="${{ secrets.GATEWAY_HOST }}"
           if [ -n "$GATEWAY_HOST" ] && [ "$GATEWAY_HOST" != "***" ]; then
             sed -i "s|host: .*|host: $GATEWAY_HOST|" values.yaml
@@ -185,51 +183,31 @@ jobs:
           cd helm-hikma
           helm upgrade --install hikma . \
             --namespace hikma \
-            --create-namespace \
-            
-            
+            --create-namespace
 
-      - name: Verify deployment
+      - name: Wait for pods to be running
         run: |
-          echo "Checking deployment status..."
-          kubectl get deployment hikma-hikma -n hikma
-          echo ""
-          echo "Checking pods..."
-          kubectl get pods -n hikma -l app.kubernetes.io/name=hikma
-          echo ""
-          echo "Checking services..."
-          kubectl get svc -n hikma
+          echo "Waiting for pods to start..."
+          kubectl wait --for=jsonpath='{.status.phase}'=Running pod -l app.kubernetes.io/name=hikma \
+            -n hikma --timeout=120s || echo "Warning: Pod not running yet"
 
-      - name: Check pod logs for errors
-        run: |
-          # Wait for pods to be ready
-          kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=hikma \
-            -n hikma --timeout=300s || true
-          
-          # Get logs from the first pod
-          POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=hikma -n hikma -o jsonpath='{.items[0].metadata.name}')
-          if [ -n "$POD_NAME" ]; then
-            echo "Logs from $POD_NAME:"
-            kubectl logs $POD_NAME -n hikma --tail=50 || true
-          fi
       - name: Check pod status
         run: |
-          echo "Checking pods..."
+          echo "=== Pod Status ==="
           kubectl get pods -n hikma -o wide
           echo ""
-          echo "Checking deployment..."
+          echo "=== Deployment Status ==="
           kubectl get deployment hikma-hikma -n hikma
           echo ""
-          echo "Checking events..."
-          kubectl get events -n hikma --sort-by='.lastTimestamp' | tail -20
+          echo "=== Recent Events ==="
+          kubectl get events -n hikma --sort-by='.lastTimestamp' | tail -15
 
       - name: Get pod logs
         run: |
           POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=hikma -n hikma -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
           if [ -n "$POD_NAME" ]; then
-            echo "Logs from $POD_NAME:"
+            echo "=== Logs from $POD_NAME ==="
             kubectl logs $POD_NAME -n hikma --tail=100 || echo "Could not get logs"
           else
             echo "No pods found"
           fi
-EOF; __hermes_rc=$?; printf '__HERMES_FENCE_a9f7b3__'; exit $__hermes_rc
