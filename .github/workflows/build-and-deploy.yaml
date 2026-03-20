@@ -145,6 +145,15 @@ jobs:
         run: |
           kubectl create namespace hikma --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Create image pull secret for GHCR
+        run: |
+          kubectl create secret docker-registry ghcr-credentials \
+            --docker-server=ghcr.io \
+            --docker-username=gliax \
+            --docker-password="${{ secrets.GITHUB_TOKEN }}" \
+            -n hikma \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Check if DATABASE_URL secret exists
         id: check-secret
         run: |
@@ -183,7 +192,7 @@ jobs:
             --namespace hikma \
             --create-namespace \
             --wait \
-            --timeout 5m
+            --timeout 10m
 
       - name: Verify deployment
         run: |
