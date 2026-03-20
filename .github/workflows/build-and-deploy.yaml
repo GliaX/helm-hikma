@@ -197,7 +197,7 @@ jobs:
           kubectl get pods -n hikma -o wide
           echo ""
           echo "=== Deployment Status ==="
-          kubectl get deployment hikma-hikma -n hikma
+          kubectl get deployment hikma -n hikma
           echo ""
           echo "=== Recent Events ==="
           kubectl get events -n hikma --sort-by='.lastTimestamp' | tail -15
@@ -211,3 +211,11 @@ jobs:
           else
             echo "No pods found"
           fi
+      - name: Describe pod for errors
+        run: |
+          POD_NAME=$(kubectl get pod -l app.kubernetes.io/name=hikma -n hikma -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+          if [ -n "$POD_NAME" ]; then
+            echo "=== Pod Description ==="
+            kubectl describe pod $POD_NAME -n hikma | grep -A20 "Events" || echo "No events"
+          fi
+ENDOFFILE; __hermes_rc=$?; printf '__HERMES_FENCE_a9f7b3__'; exit $__hermes_rc
