@@ -1,5 +1,6 @@
 name: Build and Deploy Hikma Health Server
 
+# Trigger rebuild - 2026-03-20
 on:
   push:
     branches: [main]
