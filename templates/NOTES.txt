@@ -25,5 +25,5 @@ View logs:
 
   kubectl logs -n {{ .Values.namespace }} -l app.kubernetes.io/name={{ include "hikma.name" . }}
 
-If Gateway API is enabled, your application will be accessible at:
-  https://{{ .Values.gateway.host }}
+If ingress is enabled, your application will be accessible at:
+  https://{{ .Values.ingress.host }}
