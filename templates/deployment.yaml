@@ -42,11 +42,6 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              # Run database migrations
-              pnpm run db:migrate
-              # Run recovery permissions script
-              pnpm run recovery:permissions
-              # Start the application
               pnpm run start-only
           ports:
             - name: http
@@ -64,6 +59,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.database.secretName }}
                   key: DATABASE_URL
+            - name: PGSSLMODE
+              value: "require"
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0"
           {{- if .Values.health.liveness.enabled }}
           livenessProbe:
             httpGet:

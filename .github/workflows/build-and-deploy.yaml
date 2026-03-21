@@ -22,7 +22,7 @@ jobs:
       - name: Checkout hikma-health-server source
         uses: actions/checkout@v4
         with:
-          repository: hikmahealth/hikma-health-server
+          repository: gliax/hikma-health-server
           path: hikma-health-server
 
       - name: Set up Docker Buildx

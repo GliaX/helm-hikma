@@ -26,9 +26,9 @@ service:
 
 # Ingress configuration
 ingress:
-  enabled: false  # Set to true and provide a valid host to enable
+  enabled: true
   className: nginx
-  host: ""  # Replace with your domain (e.g., health.glia.org)
+  host: ""
   path: /
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
