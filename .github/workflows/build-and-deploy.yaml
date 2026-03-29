@@ -57,6 +57,9 @@ jobs:
           
           WORKDIR /app
           
+          # Set memory for Node.js build
+          ENV NODE_OPTIONS="--max-old-space-size=5120"
+          
           # Install pnpm
           RUN corepack enable && corepack prepare pnpm@latest --activate
           
