@@ -63,6 +63,8 @@ spec:
               value: "require"
             - name: NODE_TLS_REJECT_UNAUTHORIZED
               value: "0"
+            - name: DB_SSL_REJECT_UNAUTHORIZED
+              value: "false"
           {{- if .Values.health.liveness.enabled }}
           livenessProbe:
             httpGet:
