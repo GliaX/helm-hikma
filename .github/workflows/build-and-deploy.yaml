@@ -162,6 +162,32 @@ jobs:
             echo "WARNING: DATABASE_URL secret not set in GitHub secrets"
           fi
 
+      - name: Checkout hikma-health-server source
+        uses: actions/checkout@v4
+        with:
+          repository: gliax/hikma-health-server
+          path: hikma-health-server
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.0
+
+      - name: Run database migrations
+        working-directory: hikma-health-server
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_SSL: "true"
+          DB_SSL_REJECT_UNAUTHORIZED: "false"
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "WARNING: DATABASE_URL not set in GitHub secrets, skipping migrations"
+            exit 0
+          fi
+          corepack enable && corepack prepare pnpm@latest --activate
+          pnpm install --frozen-lockfile --ignore-scripts
+          npx kysely migrate latest
+
       - name: Update values with image tag
         run: |
           cd helm-hikma
