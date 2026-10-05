@@ -30,7 +30,7 @@ spec:
               git init /src
               cd /src
               git remote add origin https://github.com/GliaX/hikma-health-server.git
-              git fetch --depth 1 origin {{ .Values.migrate.sourceSha }}
+              git fetch --depth 1 origin main
               git checkout FETCH_HEAD
               pnpm install --frozen-lockfile --ignore-scripts
               npx kysely migrate latest

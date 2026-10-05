@@ -179,8 +179,7 @@ jobs:
           cd helm-hikma
           helm upgrade --install hikma . \
             --namespace hikma \
-            --create-namespace \
-            --set migrate.sourceSha="${{ github.sha }}"
+            --create-namespace
 
       - name: Wait for pods to be running
         run: |
