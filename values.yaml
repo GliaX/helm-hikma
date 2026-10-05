@@ -56,6 +56,12 @@ database:
   # Secret name where DATABASE_URL is stored
   secretName: hikma-db-credentials
 
+# Schema migration hook (pre-install/pre-upgrade Job)
+# Full commit SHA of gliax/hikma-health-server to migrate from.
+# CI sets this via --set migrate.sourceSha=<sha> on every deploy.
+migrate:
+  sourceSha: ""
+
 # Health checks
 health:
   liveness:
