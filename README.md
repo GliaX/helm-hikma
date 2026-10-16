@@ -258,5 +258,4 @@ Go to Actions tab > Build and Deploy Hikma Health Server > Run workflow
 - Enable GitHub repository protection rules for main branch
 ## License
 
-
 See the hikma-health-server repository for licensing information.
