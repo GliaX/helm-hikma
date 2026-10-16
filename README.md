@@ -256,7 +256,6 @@ Go to Actions tab > Build and Deploy Hikma Health Server > Run workflow
 - Consider using a dedicated GitHub token with minimal required scopes
 - Rotate database credentials regularly
 - Enable GitHub repository protection rules for main branch
-
 ## License
 
 
